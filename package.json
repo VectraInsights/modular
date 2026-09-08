@@ -1,0 +1,43 @@
+{
+  "name": "planejador-comodos",
+  "version": "1.0.0",
+  "description": "Planejador de cômodos 2D + 3D — app de PC (Electron). Só digite as medidas e o desenho sai sozinho.",
+  "main": "main.js",
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win portable",
+    "dist:installer": "electron-builder --win nsis"
+  },
+  "devDependencies": {
+    "electron": "^32.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "com.planejador.comodos",
+    "productName": "Planejador de Cômodos",
+    "directories": {
+      "output": "dist_electron"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html"
+    ],
+    "win": {
+      "target": ["portable", "nsis"],
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Planejador de Cômodos"
+    },
+    "portable": {
+      "artifactName": "PlanejadorComodos-${version}-portable.${ext}"
+    }
+  }
+}
