@@ -341,7 +341,7 @@ function updateWmPreview(){
   if(varaoOn){
     const varaoPosVal=parseInt(document.getElementById('wmVaraoPos').value)||1600;
     const varY=varaoPosVal/totalH*100;
-    html+='<div style="position:absolute;left:10%;right:10%;height:2px;top:'+(100-varY)+'%;background:#c0c0c0;border-radius:1px"></div>'; }
+    html+='<div style="position:absolute;left:0;right:0;height:2px;top:'+(100-varY)+'%;background:#c0c0c0;border-radius:1px"></div>'; }
   html+='</div>';
   html+='<div style="position:absolute;bottom:-18px;left:0;right:0;text-align:center;font-size:10px;color:#64748b">'+totalH+'mm</div>';
   el.innerHTML=html; }
@@ -541,7 +541,7 @@ function rebuild(){
           const sh=box(innerW,p,innerD,new THREE.Color(0x0f172a),0,yPos,0,fg,i); sh.castShadow=false;
           yCur=Math.max(yCur,yPos); } }
       if(varao&&varao.presente){ const varY=varao.pos?varao.pos/1000:yCur+.06;
-        const rod=box(innerW,.025,innerD,new THREE.Color(0xc0c0c0),0,varY,0,fg,i); rod.castShadow=false;
+        const rod=box(f.w,.025,f.h,new THREE.Color(0xc0c0c0),0,varY,0,fg,i); rod.castShadow=false;
         yCur=varY+.06; }
       if(male>0){ const maleH=male/1000; yCur=fh-maleH;
         const sh=box(innerW,p,innerD,new THREE.Color(0x0f172a),0,yCur,0,fg,i); sh.castShadow=false; }
