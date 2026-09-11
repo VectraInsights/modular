@@ -342,7 +342,7 @@ function updateWmPreview(){
   for(let k=0;k<gavQtd;k++){
     const gh=gavHArrPct[k]||(200/totalH*100);
     const cssTop=gavPos[k]!==undefined?(100-gavPos[k]-gh):100-(k+1)*gh*1.2;
-    html+='<div style="position:absolute;left:4%;right:4%;height:'+Math.max(gh,3)+'%;top:'+cssTop+'%;background:#8b7ec8;border:1px solid #6b5ea8;border-radius:2px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff">'+(k+1)+'</div>'; }
+    html+='<div style="position:absolute;left:0;right:0;height:'+Math.max(gh,3)+'%;top:'+cssTop+'%;background:#8b7ec8;border:1px solid #6b5ea8;border-radius:2px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff">'+(k+1)+'</div>'; }
   for(let k=0;k<pratQtd;k++){
     const top=pratPos[k]!==undefined?(100-pratPos[k]):100-(k+1)*100/(pratQtd+1);
     html+='<div style="position:absolute;left:0;right:0;height:2px;top:'+top+'%;background:#059669"></div>'; }
@@ -560,7 +560,7 @@ function rebuild(){
           if(gav.hArr&&gav.hArr[k]!=null) gavHeight=gav.hArr[k]/1000;
           else if(gav.h) gavHeight=gav.h/1000;
           else gavHeight=.2;
-          box(innerW,gavHeight,innerD,gavCol,0,yPos+gavHeight/2,0,fg,i);
+          box(f.w,gavHeight,f.h,gavCol,0,yPos+gavHeight/2,0,fg,i);
           const hx=ox*(f.w/2-p), hz=oz*(f.h/2-p);
           const hw=ox!==0?.015:.10, hd=oz!==0?.015:.10;
           const handle=new THREE.Mesh(new THREE.BoxGeometry(hw,.018,hd),new THREE.MeshStandardMaterial({color:0x1f2937,roughness:.3,metalness:.6}));
@@ -572,7 +572,7 @@ function rebuild(){
           if(prat.pos&&prat.pos[k]!=null) yPos=prat.pos[k]/1000;
           else if(prat.alturas&&prat.alturas[k]!=null){ if(k===0) yPos=prat.alturas[0]/1000; else yPos=yCur+prat.alturas[k]/1000; }
           else yPos=(k+1)*fh/(prat.qtd+1);
-          const sh=box(innerW,p,innerD,new THREE.Color(0x0f172a),0,yPos,0,fg,i); sh.castShadow=false;
+          const sh=box(f.w,p,f.h,new THREE.Color(0x0f172a),0,yPos,0,fg,i); sh.castShadow=false;
           yCur=Math.max(yCur,yPos); } }
       if(varao&&varao.presente){ const varY=varao.pos?varao.pos/1000:yCur+.06;
         const rodLen=ox!==0?innerD:innerW;
@@ -583,7 +583,7 @@ function rebuild(){
         rodMesh.castShadow=false; fg.add(rodMesh);
         yCur=varY+.06; }
       if(male>0){ const maleH=male/1000; yCur=fh-maleH;
-        const sh=box(innerW,p,innerD,new THREE.Color(0x0f172a),0,yCur,0,fg,i); sh.castShadow=false; }
+        const sh=box(f.w,p,f.h,new THREE.Color(0x0f172a),0,yCur,0,fg,i); sh.castShadow=false; }
       if(wc.porta&&wc.porta.qtd>0){
         const doorMat=new THREE.MeshStandardMaterial({color:new THREE.Color(col).offsetHSL(0,-.08,.05),roughness:.5,metalness:.1});
         const doorW=ox!==0?innerD:innerW;
