@@ -620,27 +620,23 @@ function rebuild(){
         for(let k=0;k<wc.porta.qtd;k++){
           const doorH=(portaAltArr[k]||1200)/1000;
           const doorY=(portaPosArr[k]||0)/1000;
-          let pw,doorX,doorZ,rotY=0;
+          let pw,doorX,doorZ;
           if(ox!==0){
             pw=f.h/wc.porta.qtd;
             const off=(k-(wc.porta.qtd-1)/2)*pw;
-            doorX=off; doorZ=ox*(f.w/2+.01); rotY=Math.PI/2;
+            doorX=ox*(f.w/2+.012); doorZ=off;
           } else {
             pw=f.w/wc.porta.qtd;
             const off=(k-(wc.porta.qtd-1)/2)*pw;
-            doorX=oz*(f.h/2+.01); doorZ=off;
+            doorX=off; doorZ=oz*(f.h/2+.012);
           }
-          const door=new THREE.Mesh(new THREE.BoxGeometry(pw,doorH,.02),doorMat);
+          const geo=ox!==0?new THREE.BoxGeometry(.02,doorH,pw):new THREE.BoxGeometry(pw,doorH,.02);
+          const door=new THREE.Mesh(geo,doorMat);
           door.position.set(doorX,doorY+doorH/2,doorZ);
-          door.rotation.y=rotY;
           door.castShadow=true; fg.add(door);
           const kn=new THREE.Mesh(new THREE.SphereGeometry(.012,8,6),new THREE.MeshStandardMaterial({color:0xc0c0c0,roughness:.2,metalness:.8}));
-          const knOff=pw*.35;
-          if(ox!==0){
-            kn.position.set(doorX+knOff*.5,doorY+doorH*.45,ox*(f.w/2+.025));
-          } else {
-            kn.position.set(oz*(f.h/2+.025),doorY+doorH*.45,doorZ+knOff*.5);
-          }
+          if(ox!==0){kn.position.set(ox*(f.w/2+.025),doorY+doorH*.45,doorZ+pw*.3);}
+          else{kn.position.set(doorX-pw*.3,doorY+doorH*.45,oz*(f.h/2+.025));}
           kn.castShadow=false; fg.add(kn); } }
       top=fh; const lb=label(f.name+' - '+f.w.toFixed(2)+'x'+f.h.toFixed(2)); lb.position.set(0,top+.3,0); fg.add(lb); }
     else if(info.kind==='desk'){ const PH=fh, PT=.018;
