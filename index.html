@@ -534,7 +534,8 @@ function rebuild(){
           else gavHeight=.2;
           box(innerW,gavHeight,innerD,gavCol,0,yPos+gavHeight/2,0,fg,i);
           const hx=ox*(f.w/2-p), hz=oz*(f.h/2-p);
-          const handle=new THREE.Mesh(new THREE.BoxGeometry(.08,.018,.015),new THREE.MeshStandardMaterial({color:0x1f2937,roughness:.3,metalness:.6}));
+          const hw=ox!==0?.015:.10, hd=oz!==0?.015:.10;
+          const handle=new THREE.Mesh(new THREE.BoxGeometry(hw,.018,hd),new THREE.MeshStandardMaterial({color:0x1f2937,roughness:.3,metalness:.6}));
           handle.position.set(hx,yPos+gavHeight/2,hz); handle.castShadow=false; fg.add(handle); }
         yCur=gav.pos&&gav.pos.length?Math.max(...gav.pos.map(v=>v/1000))+(.2):gav.qtd*.2; }
       if(prat&&prat.qtd>0){
