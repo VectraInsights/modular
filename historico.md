@@ -1,97 +1,103 @@
-# HISTÓRICO — Planejador de Cômodos
+# HISTORICO — Planejador de Comodos
 
-Arquivo de continuidade: quem abrir este repositório em outro PC começa daqui.
-Última atualização: 08/09/2026.
+Arquivo de continuidade: quem abrir este repositorio em outro PC comeca daqui.
+Ultima atualizacao: 11/09/2026.
 
-## 1. O que é
+## 1. O que e
 
-App de PC (Electron) para planejar cômodos só digitando medidas.
-Desenha a **planta 2D em escala** + **visão 3D** (Three.js), salva projeto em `.json`
-e exporta PNG. Feito para planejar o quarto da criança antes de comprar/mandar fazer os móveis.
+App de PC (Electron) para planejar comodos so digitando medidas.
+Desenha a **planta 2D em escala** + **visao 3D** (Three.js), salva projeto em .json
+e exporta PNG. Feito para planejar o quarto da crianca antes de comprar/mandar fazer os moveis.
 
 ## 2. O quarto real que originou o projeto
 
-- Medidas: **3,00 m (parede da porta/direita) × 2,60 m (parede da janela/fundo) × 2,40 m altura** (~7,8 m²)
+- Medidas: **3,00 m (parede da porta/direita) x 2,60 m (parede da janela/fundo) x 2,40 m altura** (~7,8 m2)
 - **Porta: parede esquerda, no TOPO** (canto superior esquerdo), 0,80 m
 - **Janela: parede de baixo** (2,60 m), ~1,50 m de largura
-- Usuário: criança de 10 anos — dormir + estudar + PC
+- Usuario: crianca de 10 anos — dormir + estudar + PC
 
-### Layout fechado (não mudar sem motivo)
-| Móvel | Medida | Posição |
+### Layout fechado (nao mudar sem motivo)
+| Moveis | Medida | Posicao |
 |---|---|---|
-| Box baú solteiro | 90 × 200 | Parede da porta, abaixo da porta; **cabeceira para a janela**, pé para a porta |
-| Guarda-roupa porta de correr | 60 prof × 180 | Parede direita, encostado no fundo (máx. 200; acima disso fecha a passagem de 1,10 m) |
-| Escrivaninha estudo + PC | 120 × 60, tampo a 75 cm | Embaixo da janela, centro-direita |
-| Gaveteiro 4 gavetas (8/14/14/25 cm) | 40 larg, até o chão | Embaixo da mesa, **lado da cama** |
-| Monitor 22–24" | sobre a mesa, lado do guarda-roupa | Com suporte/base elevatória |
-| CPU em suporte com rodas | ~22 × 45 | No chão ao lado do guarda-roupa (fora da mesa), 15 cm de respiro |
+| Box bau solteiro | 90 x 200 | Parede da porta, abaixo da porta; **cabeceira para a janela**, pe para a porta |
+| Guarda-roupa porta de correr | 60 prof x 180 | Parede direita, encostado no fundo (max. 200) |
+| Escrivaninha estudo + PC | 120 x 60, tampo a 75 cm | Embaixo da janela, centro-direita |
+| Gaveteiro 4 gavetas (8/14/14/25 cm) | 40 larg, ate o chao | Embaixo da mesa, **lado da cama** |
+| Monitor 22-24" | sobre a mesa, lado do guarda-roupa | Com suporte/base elevatoria |
+| CPU em suporte com rodas | ~22 x 45 | No chao ao lado do guarda-roupa, 15 cm de respiro |
 
 ### Marcenaria da escrivaninha (fechado)
-- Laterais em **chapa inteira** 60 × 72 (MDP/MDF 18 mm), sem pé
-- Fundo **aberto** + **réguinha de 10 cm em pé** (de cutelo) embaixo do tampo, no fundo, parafusada nas laterais e no tampo
-- Furo passa-cabo 60 mm no canto do monitor; canaleta + régua com interruptor embaixo do tampo
+- Laterais em **chapa inteira** 60 x 72 (MDP/MDF 18 mm), sem pe
+- Fundo **aberto** + **reguinha de 10 cm em pe** (de cutelo) embaixo do tampo
+- Furo passa-cabo 60 mm no canto do monitor; canaleta + regua com interruptor
 - Sapata niveladora/feltro sob as laterais
 
-## 3. Evolução do app (o que já foi feito)
+## 3. Evolucao do app (o que ja foi feito)
 
-1. `planejador-comodos.html` (fora deste repo) — protótipo 2D em SVG, 1 arquivo.
-2. **App de PC Electron** (`planejador-comodos-pc/`): `main.js` + `preload.js` + `index.html`
-   (2D + 3D no mesmo arquivo, estado compartilhado `window.PLAN`, mesma chave de
-   template do quarto 2,60 × 3,00).
-3. **Porta 3D corrigida**: a folha saía como placa deitada; agora é vertical (2,05 m),
-   com batentes, maçaneta e abertura para dentro (corrigido após print do usuário).
-4. **Teclado**: 1–9 seleciona · setas movem 1 cm (Shift = 10 cm) com trava nas paredes ·
-   R gira · Del exclui · Esc desseleciona. Vale no 2D e no 3D.
-5. **Template atualizado** com o layout fechado acima (gaveteiro, monitor sobre a mesa,
-   CPU com rodinhas; mesa 3D com chapas laterais + réguinha; gaveteiro com 4 frentes).
-6. Atalho na área de trabalho do PC original (aponta para o `electron.exe` local —
-   **refazer em cada PC novo**, ver §5).
+1. planejador-comodos.html (fora deste repo) — prototipo 2D em SVG, 1 arquivo.
+2. **App de PC Electron**: main.js + preload.js + index.html (2D + 3D, estado compartilhado window.PLAN).
+3. **Porta 3D corrigida**: folha vertical (2,05 m), batentes, macaneta, abertura para dentro.
+4. **Teclado**: 1-9 seleciona, setas 1 cm (Shift=10 cm), R gira, Del exclui, Esc desseleciona.
+5. **Template atualizado** com layout fechado (gaveteiro, monitor, CPU, mesa 3D, gaveteiro 4 frentes).
+6. Atalho na area de trabalho (refazer em cada PC novo, ver §5).
+7. **Cores por parede**: cor individual via color picker no painel lateral.
+8. **Textura do chao**: canvas IIFE com padrao de tacos, CanvasTexture no Three.js.
+9. **Macaneta 3D**: esfera metalica na porta (metalness 0.8).
+10. **Edicao inline**: duplo-clique no 2D edita nome. Botao R gira 90°.
+11. **Trava de paredes no 3D**: setas nao ultrapassam limites da sala.
+12. **rebuild() seguro**: try/catch previne tela preta no 3D.
+13. **Cache-busting no Electron**: ?v=Date.now() ao carregar index.html.
+14. **Encoding UTF-8** forcado em todos os arquivos.
+15. **Guarda-roupa — orientacao**: abre para frente (centro da sala), eixo dominante X/Z.
+16. **Guarda-roupa — modal**: preview visual, posicoes individuais em mm, alturas por gaveta.
+17. **Guarda-roupa — rodape**: checkbox, altura configuravel (mm), padrao 80mm.
+18. **Guarda-roupa — varao**: posicao editavel (mm do chao), largura total do modulo.
+19. **Botoes 3D**: "Paredes: solidas/fantasmas" (opacity 0) + "Moveis: livres/travados".
+20. **Compatibilidade retro**: lturas[] antigo convertido para pos[] automaticamente.
 
 ## 4. Estrutura dos arquivos
 
-```
+`
 planejador-comodos-pc/
 ├── package.json     # scripts: start | dist | dist:installer
 ├── main.js          # janela Electron, menu, salvar/abrir .json e PNG no disco
 ├── preload.js       # ponte segura (window.pcApi)
-├── index.html       # app inteiro: CSS + lógica 2D (script clássico) + 3D (módulo Three.js via CDN)
+├── index.html       # app inteiro: CSS + logica 2D + 3D (modulo Three.js via CDN)
 ├── historico.md     # ESTE ARQUIVO
+├── vercel.json      # configuracao Vercel
 └── .gitignore       # ignora node_modules/ e dist_electron/
-```
+`
 
-Detalhes técnicos relevantes:
-- Altura dos móveis no 3D é inferida pelo nome (`hFor()`): cama/guarda-roupa/mesa/torre/
-  gaveteiro/monitor/CPU. Nomeou diferente, renderiza como caixa genérica de 0,90 m.
-- Itens `gaveteiro|monitor` são ignorados no alerta de sobreposição 2D (ficam sobre/embaixo da mesa).
-- Persistência dupla: `localStorage` (automático) + arquivo `.json` (Arquivo → Salvar).
-- O 3D baixa o Three.js do CDN na 1ª vez (precisa de internet); o 2D é 100% offline.
+Detalhes tecnicos:
+- Altura dos moveis no 3D e inferida pelo nome (hFor()).
+- Itens gaveteiro|monitor ignorados no alerta de sobreposicao 2D.
+- Persistencia dupla: localStorage + arquivo .json.
+- O 3D baixa o Three.js do CDN na 1a vez; o 2D e 100% offline.
 
 ## 5. Como continuar em outro PC
 
-```bash
+`ash
 git clone https://github.com/VectraInsights/modular.git
 cd modular
 npm install --no-audit --no-fund
-node node_modules/electron/install.js   # baixa o binário do Electron
-npm start                                # abre o app
-```
+node node_modules/electron/install.js
+npm start
+`
 
-Opcional:
-- `npm run dist` → gera o `.exe` portátil em `dist_electron/`
-- Atalho manual: criar `.lnk` na área de trabalho com destino
-  `.../modular/node_modules/electron/dist/electron.exe`, argumentos `.`,
-  pasta inicial `.../modular`.
+## 6. Proximos passos sugeridos (nao feitos)
 
-## 6. Próximos passos sugeridos (não feitos)
-
-- [ ] Altura editável por móvel (hoje é inferida pelo nome no 3D)
+- [ ] Altura editavel por moveis
 - [ ] Empacotar o Three.js local (3D 100% offline)
-- [ ] Ícone próprio do app (`.ico`) + atalho criado pelo instalador
-- [ ] Medir e exibir a passagem mínima em tempo real no 3D
-- [ ] Biblioteca de peças (beliche, criado-mudo, prateleira) em 1 clique
+- [ ] Icone proprio do app (.ico)
+- [ ] Medir e exibir passagem minima em tempo real no 3D
+- [ ] Biblioteca de pecas (beliche, criado-mudo, prateleira) em 1 clique
+- [ ] Otimizar fechaduras de portas/corredicas no 3D
 
-## 7. Registro de sincronizações
+## 7. Registro de sincronizacoes
 
 | Data | Onde | O que foi feito |
 |---|---|---|
-| 08/09/2026 | PC Eduarda | Projeto inicial subido ao repositório (app 2D+3D completo). |
+| 08/09/2026 | PC Eduarda | Projeto inicial subido ao repositorio (app 2D+3D completo). |
+| 11/09/2026 | PC Eduarda | Correcoes encoder, cores por parede, chao textura, macaneta 3D, edicao inline, trava de paredes, rebuild seguro. |
+| 11/09/2026 | PC Eduarda | Guarda-roupa: orientacao para frente, modal com preview, posicoes/alturas individuais, rodape, varao editavel. |
+| 11/09/2026 | PC Eduarda | Botoes 3D: esconder paredes (opacity 0) + travar moveis. Cache-busting Electron. Compatibilidade retro alturas[]. |
