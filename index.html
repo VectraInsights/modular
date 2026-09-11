@@ -89,6 +89,7 @@ svg{display:block;margin:0 auto;touch-action:none;user-select:none}
     <button onclick="setCam('persp')">Perspectiva</button><button onclick="setCam('top')">Topo</button><button onclick="setCam('in')">Passeio interno</button>
     <button onclick="toggleGhost()" id="ghostBtn">Paredes: solidas</button>
     <button onclick="toggleLockFurn()" id="lockFurnBtn">Moveis: livres</button>
+    <button onclick="toggleLabels()" id="labelBtn">Nomes: visiveis</button>
   </div><canvas id="gl"></canvas></div><div class="hint">Arraste para orbitar - roda do mouse = zoom - arraste um movel para mover - clique para selecionar.</div></div>
   <div class="stats"><div id="stArea">Area: --</div><div id="stFree">Livre: --</div><div id="stScale">--</div></div>
   <div id="msg"></div>
@@ -445,7 +446,7 @@ sun.shadow.camera.left=-6; sun.shadow.camera.right=6; sun.shadow.camera.top=6; s
 sun.shadow.bias=-0.0005; scene.add(sun);
 const fill=new THREE.DirectionalLight(0xc8dff5,.5); fill.position.set(-4,5,-3); scene.add(fill);
 scene.add(new THREE.AmbientLight(0xffffff,.3));
-let roomG=null, ghost=false, lockFurn=false;
+let roomG=null, ghost=false, lockFurn=false, labelsVisible=true;
 const ray=new THREE.Raycaster(), ptr=new THREE.Vector2(), floorPlane=new THREE.Plane(new THREE.Vector3(0,1,0),0);
 let drag3=null;
 
@@ -463,7 +464,7 @@ function label(text){ const c=document.createElement('canvas'); c.width=512; c.h
   g.textAlign='center'; g.fillText(text.split(' - ')[0].slice(0,22),256,58); g.font='36px system-ui'; g.fillStyle='#cbd5e1';
   g.fillText(text.split(' - ')[1]||'',256,102);
   const t=new THREE.CanvasTexture(c); const m=new THREE.SpriteMaterial({map:t,transparent:true});
-  const sp=new THREE.Sprite(m); sp.scale.set(1.15,.29,1); return sp; }
+  const sp=new THREE.Sprite(m); sp.scale.set(1.15,.29,1); sp.userData.isLabel=true; return sp; }
 function box(w,h,d,color,x,y,z,parent,idx){
   const c=new THREE.Color(color);
   const isWood=c.r>.3&&c.g>.2&&c.b<.5;
@@ -593,7 +594,8 @@ function rebuild(){
           const hx=ox*(f.w/2-p), hz=oz*(f.h/2-p);
           const hw=ox!==0?.015:.10, hd=oz!==0?.015:.10;
           const handle=new THREE.Mesh(new THREE.BoxGeometry(hw,.018,hd),new THREE.MeshStandardMaterial({color:0x1f2937,roughness:.3,metalness:.6}));
-          handle.position.set(hx,yPos+gavHeight/2,hz); handle.castShadow=false; fg.add(handle); }
+          handle.position.set(hx,yPos+gavHeight/2,hz); handle.castShadow=false; fg.add(handle);
+          if(k<gav.qtd-1){ box(f.w,.004,f.h,new THREE.Color(0x1a1a2e),0,yPos+gavHeight+.002,0,fg,i); } }
         yCur=gav.pos&&gav.pos.length?Math.max(...gav.pos.map(v=>v/1000))+(.2):gav.qtd*.2; }
       if(prat&&prat.qtd>0){
         for(let k=0;k<prat.qtd;k++){
@@ -602,6 +604,10 @@ function rebuild(){
           else if(prat.alturas&&prat.alturas[k]!=null){ if(k===0) yPos=prat.alturas[0]/1000; else yPos=yCur+prat.alturas[k]/1000; }
           else yPos=(k+1)*fh/(prat.qtd+1);
           const sh=box(f.w,p,f.h,new THREE.Color(0x0f172a),0,yPos,0,fg,i); sh.castShadow=false;
+          if(k<prat.qtd-1){
+            const nextY=prat.pos&&prat.pos[k+1]!=null?prat.pos[k+1]/1000:(k+2)*fh/(prat.qtd+1);
+            const midY=(yPos+p/2+nextY-p/2)/2;
+            box(f.w,.004,f.h,new THREE.Color(0x1a1a2e),0,midY,0,fg,i); }
           yCur=Math.max(yCur,yPos); } }
       if(varao&&varao.presente){ const varY=varao.pos?varao.pos/1000:yCur+.06;
         const rodLen=ox!==0?innerD:innerW;
@@ -679,9 +685,11 @@ function setCam(m){ const st=window.PLAN.state,W=st.room.w,H=st.room.h,Ht=st.roo
   controls.update(); }
 function toggleGhost(){ ghost=!ghost; document.getElementById('ghostBtn').textContent=ghost?'Paredes: fantasmas':'Paredes: solidas'; rebuild(); }
 function toggleLockFurn(){ lockFurn=!lockFurn; document.getElementById('lockFurnBtn').textContent=lockFurn?'Moveis: travados':'Moveis: livres'; }
+function toggleLabels(){ labelsVisible=!labelsVisible; document.getElementById('labelBtn').textContent=labelsVisible?'Nomes: visiveis':'Nomes: ocultos';
+  scene.traverse(o=>{ if(o.userData&&o.userData.isLabel) o.visible=labelsVisible; }); }
 function resize(){ const w=document.getElementById('glWrap'); if(!w||!w.clientWidth)return;
   const ww=w.clientWidth; renderer.setSize(ww,600,false); camera.aspect=ww/600; camera.updateProjectionMatrix(); }
-window.setCam=setCam; window.toggleGhost=toggleGhost; window.toggleLockFurn=toggleLockFurn; window.center3d=()=>setCam('persp');
+window.setCam=setCam; window.toggleGhost=toggleGhost; window.toggleLockFurn=toggleLockFurn; window.toggleLabels=toggleLabels; window.center3d=()=>setCam('persp');
 window.__rebuild3d=rebuild; window.__resize3d=resize; window.__frame3d=()=>frame(true);
 window.__shot3d=()=>renderer.domElement.toDataURL('image/png');
 window.PLAN.subs.push(()=>{ if(document.getElementById('view3d').style.display!=='none') rebuild(); });
