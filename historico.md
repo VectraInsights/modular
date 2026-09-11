@@ -101,3 +101,6 @@ npm start
 | 11/09/2026 | PC Eduarda | Correcoes encoder, cores por parede, chao textura, macaneta 3D, edicao inline, trava de paredes, rebuild seguro. |
 | 11/09/2026 | PC Eduarda | Guarda-roupa: orientacao para frente, modal com preview, posicoes/alturas individuais, rodape, varao editavel. |
 | 11/09/2026 | PC Eduarda | Botoes 3D: esconder paredes (opacity 0) + travar moveis. Cache-busting Electron. Compatibilidade retro alturas[]. |
+| 11/09/2026 | Vercel | Move移到 raiz do repo. Texturas de madeira procedurais. Porta(s) configuravel(is) com posicao/altura individual. |
+| 11/09/2026 | Vercel | Puxadores proporcionais (gavetas 14cm, portas 15% alt). Linhas divisórias entre gavetas/prateleiras/portas. Botao ocultar nomes 3D. |
+| 11/09/2026 | Vercel | Trava de moveis com mouse (2D+3D). Deselecao ao clicar no chao. Botao D duplicar movel. |
