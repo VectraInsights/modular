@@ -128,6 +128,7 @@ function quickAdd(name,w,h,color){ S().furn.push({name,w,h,color,x:.1,y:.1,fH:h}
 function addFurniture(){ S().furn.push({name:document.getElementById('fName').value||'Movel',w:Math.max(.1,v('fW')),h:Math.max(.1,v('fD')),color:document.getElementById('fColor').value,x:v('fX'),y:v('fY'),fH:Math.max(.1,v('fH'))});
   window.PLAN.sel=S().furn.length-1; refresh(); }
 function rotSel(){ const f=S().furn[window.PLAN.sel]; if(f){const t=f.w;f.w=f.h;f.h=t;refresh();} }
+function dupFurn(i){ const f=S().furn[i]; if(!f)return; const c=JSON.parse(JSON.stringify(f)); c.x=Math.round((f.x+.05)*100)/100; c.y=Math.round((f.y+.05)*100)/100; S().furn.push(c); window.PLAN.sel=S().furn.length-1; refresh(); }
 function applyEdit(){
   const i=window.PLAN.sel; if(i<0||i>=S().furn.length) return;
   const f=S().furn[i];
@@ -165,7 +166,8 @@ function listAll(){
     li.innerHTML='<span class="dot" style="background:'+f.color+'"></span><span class="grow"><b>'+esc(f.name)+'</b><br>'+f.w.toFixed(2)+' x '+f.h.toFixed(2)+'m x '+fh.toFixed(2)+'m - x '+f.x.toFixed(2)+' y '+f.y.toFixed(2)+'</span>';
     const br=document.createElement('button'); br.textContent='R'; br.className='small'; br.title='Girar mobilia 90 graus'; br.onclick=(e)=>{e.stopPropagation();window.PLAN.sel=i;rotSel();};
     const bd=document.createElement('button'); bd.textContent='X'; bd.className='small danger'; bd.onclick=(e)=>{e.stopPropagation();delFurn(i);};
-    li.onclick=()=>{window.PLAN.sel=i;refresh(true);}; li.appendChild(br); li.appendChild(bd);
+    const bp=document.createElement('button'); bp.textContent='D'; bp.className='small'; bp.title='Duplicar movel'; bp.style.background='#d1fae5'; bp.onclick=(e)=>{e.stopPropagation();dupFurn(i);};
+    li.onclick=()=>{window.PLAN.sel=i;refresh(true);}; li.appendChild(br); li.appendChild(bp); li.appendChild(bd);
     { const bc=document.createElement('button'); bc.textContent='G'; bc.className='small'; bc.title='Configurar gavetas, prateleiras, varao'; bc.style.background='#dbeafe'; bc.onclick=(e)=>{e.stopPropagation();openWardModal(i);}; li.appendChild(bc); }
     fu.appendChild(li); });
   if(window.PLAN.sel>=0 && window.PLAN.sel<S().furn.length){
