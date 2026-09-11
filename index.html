@@ -591,11 +591,13 @@ function rebuild(){
           else if(gav.h) gavHeight=gav.h/1000;
           else gavHeight=.2;
           box(f.w,gavHeight,f.h,gavCol,0,yPos+gavHeight/2,0,fg,i);
-          const hx=ox*(f.w/2-p), hz=oz*(f.h/2-p);
-          const hw=ox!==0?.015:.10, hd=oz!==0?.015:.10;
-          const handle=new THREE.Mesh(new THREE.BoxGeometry(hw,.018,hd),new THREE.MeshStandardMaterial({color:0x1f2937,roughness:.3,metalness:.6}));
-          handle.position.set(hx,yPos+gavHeight/2,hz); handle.castShadow=false; fg.add(handle);
-          if(k<gav.qtd-1){ box(f.w,.004,f.h,new THREE.Color(0x1a1a2e),0,yPos+gavHeight+.002,0,fg,i); } }
+          const knH=Math.min(gavHeight*.3,.06);
+          const knMat=new THREE.MeshStandardMaterial({color:0x1f2937,roughness:.3,metalness:.6});
+          const kn=new THREE.Mesh(new THREE.BoxGeometry(.06,knH,.015),knMat);
+          if(ox!==0){kn.position.set(ox*(f.w/2-p+.01),yPos+gavHeight/2,0);}
+          else{kn.position.set(0,yPos+gavHeight/2,oz*(f.h/2-p+.01));}
+          kn.castShadow=false; fg.add(kn);
+          if(k<gav.qtd-1){ box(f.w,.003,f.h,new THREE.Color(0x1a1a2e),0,yPos+gavHeight+.0015,0,fg,i); } }
         yCur=gav.pos&&gav.pos.length?Math.max(...gav.pos.map(v=>v/1000))+(.2):gav.qtd*.2; }
       if(prat&&prat.qtd>0){
         for(let k=0;k<prat.qtd;k++){
@@ -641,12 +643,12 @@ function rebuild(){
           const door=new THREE.Mesh(doorGeo,doorMat);
           door.position.set(doorX,doorY+doorH/2,doorZ);
           door.castShadow=true; fg.add(door);
-          const knH=Math.min(doorH*.15,.08);
-          const knW=Math.min(pw*.25,.06);
+          const knH=Math.min(doorH*.12,.06);
+          const knW=Math.min(pw*.2,.05);
           const knMat=new THREE.MeshStandardMaterial({color:0xc0c0c0,roughness:.2,metalness:.8});
           const kn=new THREE.Mesh(new THREE.BoxGeometry(knW,knH,.012),knMat);
-          if(ox!==0){kn.position.set(ox*(f.w/2+.02),doorY+doorH*.45,doorZ+pw*.35);}
-          else{kn.position.set(doorX-pw*.35,doorY+doorH*.45,oz*(f.h/2+.02));}
+          if(ox!==0){kn.position.set(ox*(f.w/2+.018),doorY+doorH/2,doorZ+pw*.4);}
+          else{kn.position.set(doorX-pw*.4,doorY+doorH/2,oz*(f.h/2+.018));}
           kn.castShadow=false; fg.add(kn);
           if(k<wc.porta.qtd-1){
             const divGeo=ox!==0?new THREE.BoxGeometry(.025,doorH,.004):new THREE.BoxGeometry(.004,doorH,.025);
