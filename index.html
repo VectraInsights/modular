@@ -219,8 +219,9 @@ function draw2d(){
     g.addEventListener('pointerdown',e=>{ const i=+g.dataset.i; window.PLAN.sel=i;
       drag={i,dx:e.clientX,dy:e.clientY,ox:S().furn[i].x,oy:S().furn[i].y}; g.setPointerCapture(e.pointerId); listAll(); draw2d(); });
   });
-  svg.addEventListener('pointermove',e=>{ if(!drag)return; const f=S().furn[drag.i];
-    f.x=Math.round((drag.ox+(e.clientX-drag.dx)/s)*100)/100; f.y=Math.round((drag.oy+(e.clientY-drag.dy)/s)*100)/100;
+  svg.addEventListener('pointermove',e=>{ if(!drag)return; const f=S().furn[drag.i]; const r=S().room;
+    f.x=Math.round(Math.min(r.w-f.w,Math.max(0,drag.ox+(e.clientX-drag.dx)/s))*100)/100;
+    f.y=Math.round(Math.min(r.h-f.h,Math.max(0,drag.oy+(e.clientY-drag.dy)/s))*100)/100;
     draw2d(); });
   svg.addEventListener('pointerup',()=>{ if(drag){drag=null;refresh();} });
 }
