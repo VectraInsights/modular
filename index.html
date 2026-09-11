@@ -615,22 +615,32 @@ function rebuild(){
         const sh=box(f.w,p,f.h,new THREE.Color(0x0f172a),0,yCur,0,fg,i); sh.castShadow=false; }
       if(wc.porta&&wc.porta.qtd>0){
         const doorMat=new THREE.MeshStandardMaterial({color:new THREE.Color(col).offsetHSL(0,-.08,.05),roughness:.5,metalness:.1});
-        const doorFaceW=ox!==0?f.h:f.w;
-        const doorFaceOff=ox!==0?oz:ox;
         const portaPosArr=wc.porta.posArr||[];
         const portaAltArr=wc.porta.altArr||[];
-        const pw=doorFaceW/wc.porta.qtd;
         for(let k=0;k<wc.porta.qtd;k++){
           const doorH=(portaAltArr[k]||1200)/1000;
           const doorY=(portaPosArr[k]||0)/1000;
+          let pw,doorX,doorZ,rotY=0;
+          if(ox!==0){
+            pw=f.h/wc.porta.qtd;
+            const off=(k-(wc.porta.qtd-1)/2)*pw;
+            doorX=off; doorZ=ox*(f.w/2+.01); rotY=Math.PI/2;
+          } else {
+            pw=f.w/wc.porta.qtd;
+            const off=(k-(wc.porta.qtd-1)/2)*pw;
+            doorX=oz*(f.h/2+.01); doorZ=off;
+          }
           const door=new THREE.Mesh(new THREE.BoxGeometry(pw,doorH,.02),doorMat);
-          const off=(k-(wc.porta.qtd-1)/2)*pw;
-          if(ox!==0){door.position.set(off,doorY+doorH/2,doorFaceOff*(f.h/2+.01));}
-          else{door.position.set(doorFaceOff*(f.w/2+.01),doorY+doorH/2,off);}
+          door.position.set(doorX,doorY+doorH/2,doorZ);
+          door.rotation.y=rotY;
           door.castShadow=true; fg.add(door);
           const kn=new THREE.Mesh(new THREE.SphereGeometry(.012,8,6),new THREE.MeshStandardMaterial({color:0xc0c0c0,roughness:.2,metalness:.8}));
-          if(ox!==0){kn.position.set(off+pw*.35,doorY+doorH*.45,doorFaceOff*(f.h/2+.025));}
-          else{kn.position.set(doorFaceOff*(f.w/2+.025),doorY+doorH*.45,off+pw*.35);}
+          const knOff=pw*.35;
+          if(ox!==0){
+            kn.position.set(doorX+knOff*.5,doorY+doorH*.45,ox*(f.w/2+.025));
+          } else {
+            kn.position.set(oz*(f.h/2+.025),doorY+doorH*.45,doorZ+knOff*.5);
+          }
           kn.castShadow=false; fg.add(kn); } }
       top=fh; const lb=label(f.name+' - '+f.w.toFixed(2)+'x'+f.h.toFixed(2)); lb.position.set(0,top+.3,0); fg.add(lb); }
     else if(info.kind==='desk'){ const PH=fh, PT=.018;
