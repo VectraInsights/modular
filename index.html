@@ -591,9 +591,9 @@ function rebuild(){
           else if(gav.h) gavHeight=gav.h/1000;
           else gavHeight=.2;
           box(f.w,gavHeight,f.h,gavCol,0,yPos+gavHeight/2,0,fg,i);
-          const knH=Math.min(gavHeight*.3,.06);
+          const knH=Math.min(gavHeight*.5,.10);
           const knMat=new THREE.MeshStandardMaterial({color:0x1f2937,roughness:.3,metalness:.6});
-          const kn=new THREE.Mesh(new THREE.BoxGeometry(.06,knH,.015),knMat);
+          const kn=new THREE.Mesh(new THREE.BoxGeometry(.12,knH,.015),knMat);
           if(ox!==0){kn.position.set(ox*(f.w/2-p+.01),yPos+gavHeight/2,0);}
           else{kn.position.set(0,yPos+gavHeight/2,oz*(f.h/2-p+.01));}
           kn.castShadow=false; fg.add(kn);
@@ -643,7 +643,7 @@ function rebuild(){
           const door=new THREE.Mesh(doorGeo,doorMat);
           door.position.set(doorX,doorY+doorH/2,doorZ);
           door.castShadow=true; fg.add(door);
-          const knH=Math.min(doorH*.12,.06);
+          const knH=Math.min(doorH*.25,.12);
           const knW=Math.min(pw*.2,.05);
           const knMat=new THREE.MeshStandardMaterial({color:0xc0c0c0,roughness:.2,metalness:.8});
           const kn=new THREE.Mesh(new THREE.BoxGeometry(knW,knH,.012),knMat);
