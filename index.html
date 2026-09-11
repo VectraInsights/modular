@@ -224,6 +224,7 @@ function draw2d(){
     f.y=Math.round(Math.min(r.h-f.h,Math.max(0,drag.oy+(e.clientY-drag.dy)/s))*100)/100;
     draw2d(); });
   svg.addEventListener('pointerup',()=>{ if(drag){drag=null;refresh();} });
+  svg.addEventListener('click',e=>{ if(!e.target.closest('g[data-i]')){ window.PLAN.sel=-1; refresh(); } });
 }
 function refresh(light){ listAll(); draw2d(); window.PLAN.emit(); }
 function showView(which){
@@ -608,7 +609,7 @@ canvas.addEventListener('pointermove',e=>{ if(!drag3)return; const r=canvas.getB
   f.y=Math.round(Math.min(st.room.h-f.h,Math.max(0,p.z+st.room.h/2-f.h/2))*100)/100;
   rebuild(); });
 canvas.addEventListener('pointerup',()=>{ if(drag3){drag3=null;controls.enabled=true;refresh();} });
-canvas.addEventListener('click',e=>{ if(!drag3){ const i=pick(e); if(i>=0){window.PLAN.sel=i;refresh();} } });
+canvas.addEventListener('click',e=>{ if(!drag3){ const i=pick(e); if(i>=0){window.PLAN.sel=i;}else{window.PLAN.sel=-1;} refresh(); } });
 (function loop(){ requestAnimationFrame(loop); controls.update(); renderer.render(scene,camera); })();
 resize();
 </script>
