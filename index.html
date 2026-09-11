@@ -465,6 +465,19 @@ function label(text){ const c=document.createElement('canvas'); c.width=512; c.h
   g.fillText(text.split(' - ')[1]||'',256,102);
   const t=new THREE.CanvasTexture(c); const m=new THREE.SpriteMaterial({map:t,transparent:true});
   const sp=new THREE.Sprite(m); sp.scale.set(1.15,.29,1); sp.userData.isLabel=true; return sp; }
+function makeWoodTex(hex,grain){
+  const c=document.createElement('canvas');c.width=256;c.height=256;const g=c.getContext('2d');
+  g.fillStyle=hex;g.fillRect(0,0,256,256);
+  const base=parseInt(hex.slice(1),16);const r=(base>>16)&255,gv=(base>>8)&255,b=base&255;
+  for(let y=0;y<256;y++){
+    const off=Math.sin(y*.08+Math.sin(y*.02)*3)*8;
+    for(let x=0;x<256;x+=2){
+      const v=Math.sin((x+off)*.15+Math.sin(y*.05)*2)*.5+.5;
+      const lr=Math.min(255,Math.max(0,r+(v-.5)*grain));
+      const lg=Math.min(255,Math.max(0,gv+(v-.5)*grain));
+      const lb=Math.min(255,Math.max(0,b+(v-.5)*grain));
+      g.fillStyle='rgb('+lr|0+','+lg|0+','+lb|0+')';g.fillRect(x,y,2,1);}}
+  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t;}
 function box(w,h,d,color,x,y,z,parent,idx){
   const c=new THREE.Color(color);
   const isWood=c.r>.3&&c.g>.2&&c.b<.5;
@@ -540,19 +553,6 @@ function rebuild(){
       g.fillStyle=(i+j)%2===0?'#e2dace':'#ddd5c8';g.fillRect(x+1,y+1,62,62);}}return c;})());
     floorTex.wrapS=floorTex.wrapT=THREE.RepeatWrapping; floorTex.repeat.set(W/2,H/2);
   const floorMat=new THREE.MeshStandardMaterial({map:floorTex,roughness:.8,metalness:0});
-  function makeWoodTex(hex,grain){
-    const c=document.createElement('canvas');c.width=256;c.height=256;const g=c.getContext('2d');
-    g.fillStyle=hex;g.fillRect(0,0,256,256);
-    const base=parseInt(hex.slice(1),16);const r=(base>>16)&255,gv=(base>>8)&255,b=base&255;
-    for(let y=0;y<256;y++){
-      const off=Math.sin(y*.08+Math.sin(y*.02)*3)*8;
-      for(let x=0;x<256;x+=2){
-        const v=Math.sin((x+off)*.15+Math.sin(y*.05)*2)*.5+.5;
-        const lr=Math.min(255,Math.max(0,r+(v-.5)*grain));
-        const lg=Math.min(255,Math.max(0,gv+(v-.5)*grain));
-        const lb=Math.min(255,Math.max(0,b+(v-.5)*grain));
-        g.fillStyle='rgb('+lr|0+','+lg|0+','+lb|0+')';g.fillRect(x,y,2,1);}}
-    const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t;}
   const floor=new THREE.Mesh(new THREE.PlaneGeometry(W,H),floorMat);
   floor.rotation.x=-Math.PI/2; floor.receiveShadow=true; roomG.add(floor);
   const pts=[]; for(let x=0;x<=W+1e-6;x+=.1){pts.push(-W/2+x,0.005,-H/2, -W/2+x,0.005,H/2);} for(let z=0;z<=H+1e-6;z+=.1){pts.push(-W/2,0.005,-H/2+z, W/2,0.005,-H/2+z);}
