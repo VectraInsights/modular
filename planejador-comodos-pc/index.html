@@ -166,7 +166,7 @@ function listAll(){
     const br=document.createElement('button'); br.textContent='R'; br.className='small'; br.title='Girar mobilia 90 graus'; br.onclick=(e)=>{e.stopPropagation();window.PLAN.sel=i;rotSel();};
     const bd=document.createElement('button'); bd.textContent='X'; bd.className='small danger'; bd.onclick=(e)=>{e.stopPropagation();delFurn(i);};
     li.onclick=()=>{window.PLAN.sel=i;refresh(true);}; li.appendChild(br); li.appendChild(bd);
-    if(/guarda/i.test(f.name)){ const bc=document.createElement('button'); bc.textContent='G'; bc.className='small'; bc.title='Configurar gavetas, prateleiras, varao'; bc.style.background='#dbeafe'; bc.onclick=(e)=>{e.stopPropagation();openWardModal(i);}; li.appendChild(bc); }
+    { const bc=document.createElement('button'); bc.textContent='G'; bc.className='small'; bc.title='Configurar gavetas, prateleiras, varao'; bc.style.background='#dbeafe'; bc.onclick=(e)=>{e.stopPropagation();openWardModal(i);}; li.appendChild(bc); }
     fu.appendChild(li); });
   if(window.PLAN.sel>=0 && window.PLAN.sel<S().furn.length){
     const f=S().furn[window.PLAN.sel];
