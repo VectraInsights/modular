@@ -268,8 +268,9 @@ function openWardModal(i){
   document.getElementById('wmRodape').checked=wc.rodape>0; document.getElementById('wmRodapeAlt').value=wc.rodape||80;
   document.getElementById('wmPorta').checked=wc.porta?wc.porta.presente!==false:false;
   document.getElementById('wmPortaQtd').value=wc.porta?wc.porta.qtd||1:1;
-  document.getElementById('wmPortaPos').value=wc.porta?wc.porta.pos||0:0;
+  window.PLAN._wmPortaPos=wc.porta&&wc.porta.posArr?wc.porta.posArr.slice(0,wc.porta.qtd||1):[];
   toggleWmGavetas(); toggleWmPrat(); toggleWmVarao(); toggleWmMaleiro(); toggleWmRodape(); toggleWmPorta();
+  rebuildPortaUI();
   window.PLAN._wmGavPos=g.pos||(g.alturas?g.alturas.reduce((acc,v,i)=>{acc.push((acc[i-1]||0)+v);return acc;},[]):null);
   window.PLAN._wmGavH=g.hArr||null;
   if(!window.PLAN._wmGavH){ const defH=g.h||200; const qtd=g.qtd||3; window.PLAN._wmGavH=[]; for(let k=0;k<qtd;k++) window.PLAN._wmGavH.push(defH); }
@@ -319,6 +320,19 @@ function rebuildPratUI(){
       '<input type="number" class="wmPratPos" data-k="'+k+'" value="'+pos[k]+'" step="10" style="width:60px;font-size:12px;padding:2px" oninput="syncPratPos('+k+',this.value);updateWmPreview()"> mm</div>'; }
   document.getElementById('wmPratList').innerHTML=h; updateWmPreview(); }
 function syncPratPos(k,v){ const pos=window.PLAN._wmPratPos||[]; pos[k]=parseInt(v)||0; window.PLAN._wmPratPos=pos; }
+function rebuildPortaUI(){
+  if(!document.getElementById('wmPorta').checked){ document.getElementById('wmPortaList').innerHTML=''; updateWmPreview(); return; }
+  const qtd=parseInt(document.getElementById('wmPortaQtd').value)||1;
+  let pos=window.PLAN._wmPortaPos||[];
+  while(pos.length<qtd) pos.push(0);
+  pos=pos.slice(0,qtd);
+  window.PLAN._wmPortaPos=pos;
+  let h='';
+  for(let k=0;k<qtd;k++){
+    h+='<div style="display:flex;align-items:center;gap:4px;margin:2px 0;font-size:12px"><span style="min-width:55px;color:#8b5e3c">Porta '+(k+1)+':</span>'+
+      '<input type="number" class="wmPortaPosInput" data-k="'+k+'" value="'+pos[k]+'" step="10" style="width:60px;font-size:12px;padding:2px" oninput="syncPortaPos('+k+',this.value);updateWmPreview()"> mm</div>'; }
+  document.getElementById('wmPortaList').innerHTML=h; updateWmPreview(); }
+function syncPortaPos(k,v){ const pos=window.PLAN._wmPortaPos||[]; pos[k]=parseInt(v)||0; window.PLAN._wmPortaPos=pos; }
 function updateWmPreview(){
   const el=document.getElementById('wmPreview'); if(!el)return;
   const totalH=parseInt(document.getElementById('wmTotalH').value)||2200;
@@ -352,8 +366,11 @@ function updateWmPreview(){
     const varY=varaoPosVal/totalH*100;
     html+='<div style="position:absolute;left:0;right:0;height:2px;top:'+(100-varY)+'%;background:#c0c0c0;border-radius:1px"></div>'; }
   if(portaOn){
-    const portaPosPct=(parseInt(document.getElementById('wmPortaPos').value)||0)/totalH*100;
-    html+='<div style="position:absolute;bottom:'+(rodapeH)+'%;top:0;left:'+portaPosPct+'%;width:'+(100-portaPosPct)+'%;background:rgba(139,115,85,0.3);border:1px solid #8b7355;box-sizing:border-box;display:flex;align-items:center;justify-content:center;font-size:10px;color:#5a4530">'+portaQtd+'x porta</div>'; }
+    const portaPosArr=window.PLAN._wmPortaPos||[];
+    for(let k=0;k<portaQtd;k++){
+      const posPct=(portaPosArr[k]||0)/totalH*100;
+      const doorPct=100/portaQtd;
+      html+='<div style="position:absolute;bottom:'+rodapeH+'%;top:0;left:'+(posPct+k*doorPct)+'%;width:'+doorPct+'%;background:rgba(139,115,85,0.3);border:1px solid #8b7355;box-sizing:border-box;display:flex;align-items:center;justify-content:center;font-size:10px;color:#5a4530">'+(k+1)+'</div>'; } }
   html+='</div>';
   html+='<div style="position:absolute;bottom:-18px;left:0;right:0;text-align:center;font-size:10px;color:#64748b">'+totalH+'mm</div>';
   el.innerHTML=html; }
@@ -374,9 +391,9 @@ function saveWardConfig(){
   const rodapeAlt=rc?parseInt(document.getElementById('wmRodapeAlt').value)||0:0;
   const pc2=document.getElementById('wmPorta').checked;
   const portaQtd=pc2?parseInt(document.getElementById('wmPortaQtd').value)||1:0;
-  const portaPos=pc2?parseInt(document.getElementById('wmPortaPos').value)||0:0;
+  const portaPosArr=(window.PLAN._wmPortaPos||[]).slice(0,portaQtd);
   f.wardConfig={gavetas:gavQtd?{qtd:gavQtd,hArr:gavH,pos:gavPos}:null,prateleiras:pratQtd?{qtd:pratQtd,pos:pratPos}:null,
-    varao:vc?{presente:true,pos:vp2}:null,maleiro:maleAlt,rodape:rodapeAlt,porta:portaQtd?{qtd:portaQtd,pos:portaPos}:null};
+    varao:vc?{presente:true,pos:vp2}:null,maleiro:maleAlt,rodape:rodapeAlt,porta:portaQtd?{qtd:portaQtd,posArr:portaPosArr}:null};
   f.fH=Math.max(.1,parseFloat(document.getElementById('wmTotalH').value)/1000)||f.fH;
   closeWardModal(); refresh(); }
 async function saveProject(){ const txt=JSON.stringify(S(),null,2);
@@ -592,11 +609,12 @@ function rebuild(){
         const doorH=fh-rodH-.01;
         const doorFaceW=ox!==0?f.h:f.w;
         const doorFaceOff=ox!==0?oz:ox;
-        const portaPosMm=(wc.porta.pos||0)/1000;
+        const portaPosArr=wc.porta.posArr||[];
         for(let k=0;k<wc.porta.qtd;k++){
           const pw=doorFaceW/wc.porta.qtd;
           const door=new THREE.Mesh(new THREE.BoxGeometry(pw,doorH,.02),doorMat);
-          const off=portaPosMm+(k-(wc.porta.qtd-1)/2)*pw;
+          const posMm=(portaPosArr[k]||0)/1000;
+          const off=posMm+(k-(wc.porta.qtd-1)/2)*pw;
           if(ox!==0){door.position.set(off,bodyY+doorH/2,doorFaceOff*(f.h/2+.01));}
           else{door.position.set(doorFaceOff*(f.w/2+.01),bodyY+doorH/2,off);}
           door.castShadow=true; fg.add(door);
@@ -712,10 +730,10 @@ resize();
         <div style="margin-top:8px;border-top:1px solid #e2e8f0;padding-top:8px">
           <label style="font-size:12px"><input type="checkbox" id="wmPorta" onchange="toggleWmPorta()"> Porta(s)</label>
           <div id="wmPortaCfg" style="margin-left:16px;display:none">
-            <label style="font-size:12px">Qtd:</label><input id="wmPortaQtd" type="number" value="1" min="1" max="4" step="1" style="width:40px" oninput="updateWmPreview()">
             <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
-              <label style="font-size:12px">Posicao:</label><input id="wmPortaPos" type="number" value="0" step="10" style="width:60px" oninput="updateWmPreview()"> mm
+              <label style="font-size:12px">Qtd:</label><input id="wmPortaQtd" type="number" value="1" min="1" max="4" step="1" style="width:50px" onchange="rebuildPortaUI()">
             </div>
+            <div id="wmPortaList" style="margin-top:4px"></div>
           </div>
         </div>
         <div style="margin-top:8px;border-top:1px solid #e2e8f0;padding-top:8px">
