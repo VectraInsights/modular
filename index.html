@@ -654,7 +654,9 @@ function rebuild(){
         rodMesh.castShadow=false; fg.add(rodMesh);
         yCur=varY+.06; }
       if(male>0){ const maleH=male/1000; yCur=fh-maleH;
-        const sh=box(f.w,p,f.h,new THREE.Color(0x0f172a),0,yCur,0,fg,i,'liso'); sh.castShadow=false; }
+        const sh=box(f.w,p,f.h,new THREE.Color(0x0f172a),0,yCur,0,fg,i,'liso'); sh.castShadow=false;
+        const ln1=box(f.w,.004,f.h,new THREE.Color(0x000000),0,yCur-p/2-.002,0,fg,i,'liso'); ln1.castShadow=false;
+        const ln2=box(f.w,.004,f.h,new THREE.Color(0xf8fafc),0,yCur+p/2+.002,0,fg,i,'liso'); ln2.castShadow=false; }
       if(wc.porta&&wc.porta.qtd>0){
         const doorBase=new THREE.Color(col).offsetHSL(0,-.08,.05);
         const doorMat=matFor(doorBase,fTex);
