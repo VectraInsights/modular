@@ -656,7 +656,8 @@ function rebuild(){
       if(male>0){ const maleH=male/1000; yCur=fh-maleH;
         const sh=box(f.w,p,f.h,new THREE.Color(0x0f172a),0,yCur,0,fg,i,'liso'); sh.castShadow=false; }
       if(wc.porta&&wc.porta.qtd>0){
-        const doorMat=new THREE.MeshStandardMaterial({color:new THREE.Color(col).offsetHSL(0,-.08,.05),roughness:.5,metalness:.1});
+        const doorBase=new THREE.Color(col).offsetHSL(0,-.08,.05);
+        const doorMat=matFor(doorBase,fTex);
         const portaPosArr=wc.porta.posArr||[];
         const portaAltArr=wc.porta.altArr||[];
         for(let k=0;k<wc.porta.qtd;k++){
@@ -680,9 +681,14 @@ function rebuild(){
           const knH=Math.max(.06,Math.min(doorH*.3,.15));
           const knW=Math.min(pw*.15,.04);
           const knMat=new THREE.MeshStandardMaterial({color:0xc0c0c0,roughness:.2,metalness:.8});
-          const kn=new THREE.Mesh(new THREE.BoxGeometry(knW,knH,.012),knMat);
-          if(ox!==0){kn.position.set(ox*(f.w/2+.015),doorY+doorH/2,doorZ+pw*.38);}
-          else{kn.position.set(doorX-pw*.38,doorY+doorH/2,oz*(f.h/2+.015));}
+          const knGeo=ox!==0?new THREE.BoxGeometry(.012,knH,knW):new THREE.BoxGeometry(knW,knH,.012);
+          const kn=new THREE.Mesh(knGeo,knMat);
+          const mid=(wc.porta.qtd-1)/2;
+          let side;
+          if(wc.porta.qtd<=1) side=ox!==0?1:-1;
+          else side=k<mid?1:-1;
+          if(ox!==0){kn.position.set(ox*(f.w/2+.015),doorY+doorH/2,doorZ+side*pw*.38);}
+          else{kn.position.set(doorX+side*pw*.38,doorY+doorH/2,oz*(f.h/2+.015));}
           kn.castShadow=false; fg.add(kn);
           if(k<wc.porta.qtd-1){
             const divGeo=ox!==0?new THREE.BoxGeometry(.025,doorH,.004):new THREE.BoxGeometry(.004,doorH,.025);
