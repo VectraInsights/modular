@@ -626,7 +626,8 @@ function rebuild(){
           box(f.w,gavHeight,f.h,gavCol,0,yPos+gavHeight/2,0,fg,i,fTex);
           const knH=Math.max(.04,Math.min(gavHeight*.4,.08));
           const knMat=new THREE.MeshStandardMaterial({color:0xc0c0c0,roughness:.2,metalness:.7});
-          const kn=new THREE.Mesh(new THREE.BoxGeometry(.14,knH,.012),knMat);
+          const knGeo=ox!==0?new THREE.BoxGeometry(.012,knH,.14):new THREE.BoxGeometry(.14,knH,.012);
+          const kn=new THREE.Mesh(knGeo,knMat);
           if(ox!==0){kn.position.set(ox*(f.w/2+.008),yPos+gavHeight/2,0);}
           else{kn.position.set(0,yPos+gavHeight/2,oz*(f.h/2+.008));}
           kn.castShadow=false; fg.add(kn);
@@ -707,7 +708,46 @@ function rebuild(){
       top=DT+.55;
       const lb=label(f.name+' - '+f.w.toFixed(2)+'x'+f.h.toFixed(2)); lb.position.set(0,top+.25,0); fg.add(lb); }
     else { box(f.w,fh,f.h,col,0,fh/2,0,fg,i,fTex); top=fh;
-      if(info.kind==='chest'){ for(let k=1;k<4;k++){ const dl=box(f.w-.05,.015,.006,new THREE.Color(0x0f172a),0,fh*k/4,-f.h/2-.001,fg,i,'liso'); dl.castShadow=false; } }
+      if(info.kind==='chest'){
+        const ccx=f.x+f.w/2, ccy=f.y+f.h/2;
+        const cdx=W/2-ccx, cdy=H/2-ccy;
+        let cox=0, coz=1;
+        if(Math.abs(cdx)*fh>Math.abs(cdy)*f.w){coz=0;cox=cdx>0?1:-1;}else{cox=0;coz=cdy>0?1:-1;}
+        const isGav=/gaveteiro/i.test(f.name);
+        const hArr=isGav?[.25,.14,.14,.08]:null;
+        const y0=isGav?0.03:0;
+        if(hArr){
+          let acc=y0;
+          const bounds=[];
+          for(let k=0;k<hArr.length;k++){ acc+=hArr[k]; bounds.push(acc); }
+          for(let k=0;k<bounds.length-1;k++){
+            const y=bounds[k];
+            let dl;
+            if(cox!==0) dl=box(.006,.015,f.h-.05,new THREE.Color(0x0f172a),cox*(f.w/2+.001),y,0,fg,i,'liso');
+            else dl=box(f.w-.05,.015,.006,new THREE.Color(0x0f172a),0,y,coz*(f.h/2+.001),fg,i,'liso');
+            dl.castShadow=false;
+          }
+          let base=y0;
+          const hMat=new THREE.MeshStandardMaterial({color:0xc0c0c0,roughness:.2,metalness:.7});
+          for(let k=0;k<hArr.length;k++){
+            const yc=base+hArr[k]/2; base+=hArr[k];
+            const pw=Math.min(.20,(cox!==0?f.h:f.w)*.45);
+            const hg=cox!==0?new THREE.BoxGeometry(.012,.025,pw):new THREE.BoxGeometry(pw,.025,.012);
+            const hm=new THREE.Mesh(hg,hMat);
+            if(cox!==0) hm.position.set(cox*(f.w/2+.012),yc,0);
+            else hm.position.set(0,yc,coz*(f.h/2+.012));
+            hm.castShadow=false; fg.add(hm);
+          }
+        } else {
+          for(let k=1;k<4;k++){
+            const y=fh*k/4;
+            let dl;
+            if(cox!==0) dl=box(.006,.015,f.h-.05,new THREE.Color(0x0f172a),cox*(f.w/2+.001),y,0,fg,i,'liso');
+            else dl=box(f.w-.05,.015,.006,new THREE.Color(0x0f172a),0,y,coz*(f.h/2+.001),fg,i,'liso');
+            dl.castShadow=false;
+          }
+        }
+      }
       if(info.kind==='cpu'){ const led=box(.02,.02,.006,new THREE.Color(0x22ff66),f.w/2-.05,fh-.06,-f.h/2-.001,fg,i,'liso'); led.castShadow=false; }
       const lb=label(f.name+' - '+f.w.toFixed(2)+'x'+f.h.toFixed(2)); lb.position.set(0,top+.3,0); fg.add(lb); }
     if(f.rodizio) addCasters(fg,f,i,lift);
