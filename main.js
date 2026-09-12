@@ -1,4 +1,4 @@
-﻿// App de PC â€” janela Electron do Planejador de CÃ´modos (2D + 3D)
+﻿// App de PC — janela Electron do Oblíquo Studio (2D + 3D)
 const { app, BrowserWindow, Menu, ipcMain, dialog, shell } = require('electron');
 const fs = require('fs');
 const path = require('path');
@@ -12,7 +12,7 @@ function createWindow() {
     height: 860,
     minWidth: 1024,
     minHeight: 680,
-    title: 'Planejador de CÃ´modos',
+    title: 'Oblíquo Studio',
     autoHideMenuBar: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -28,10 +28,10 @@ const menu = Menu.buildFromTemplate([
   {
     label: 'Arquivo',
     submenu: [
-      { label: 'Abrir projetoâ€¦', accelerator: 'Ctrl+O', click: () => win && win.webContents.send('menu-open') },
-      { label: 'Salvar projetoâ€¦', accelerator: 'Ctrl+S', click: () => win && win.webContents.send('menu-save') },
+      { label: 'Abrir projeto…', accelerator: 'Ctrl+O', click: () => win && win.webContents.send('menu-open') },
+      { label: 'Salvar projeto…', accelerator: 'Ctrl+S', click: () => win && win.webContents.send('menu-save') },
       { type: 'separator' },
-      { label: 'Exportar PNG (vista atual)â€¦', click: () => win && win.webContents.send('menu-png') },
+      { label: 'Exportar PNG (vista atual)…', click: () => win && win.webContents.send('menu-png') },
       { type: 'separator' },
       { label: 'Sair', accelerator: 'Alt+F4', click: () => app.quit() }
     ]
@@ -40,7 +40,7 @@ const menu = Menu.buildFromTemplate([
     label: 'Exibir',
     submenu: [
       { label: 'Planta 2D', click: () => win && win.webContents.send('menu-view', '2d') },
-      { label: 'VisÃ£o 3D', click: () => win && win.webContents.send('menu-view', '3d') },
+      { label: 'Visão 3D', click: () => win && win.webContents.send('menu-view', '3d') },
       { type: 'separator' },
       { label: 'Recarregar', accelerator: 'F5', click: () => win && win.webContents.reload() },
       { label: 'DevTools', accelerator: 'F12', click: () => win && win.webContents.toggleDevTools() }
@@ -50,7 +50,7 @@ const menu = Menu.buildFromTemplate([
     label: 'Ajuda',
     submenu: [
       { label: 'Abrir pasta de projetos', click: () => shell.openPath(path.join(os.homedir(), 'Documents')) },
-      { label: 'Sobre', click: () => dialog.showMessageBox(win, { type: 'info', title: 'Planejador de CÃ´modos', message: 'Planejador de CÃ´modos 1.0 â€” digite as medidas e veja a planta 2D + 3D.' }) }
+      { label: 'Sobre', click: () => dialog.showMessageBox(win, { type: 'info', title: 'Oblíquo Studio', message: 'Oblíquo Studio 1.0 — digite as medidas e veja a planta 2D + 3D.' }) }
     ]
   }
 ]);
@@ -62,7 +62,7 @@ app.whenReady().then(() => {
 });
 app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
 
-// Salvar / abrir projeto JSON na mÃ¡quina (app de PC de verdade, sem navegador)
+// Salvar / abrir projeto JSON na máquina (app de PC de verdade, sem navegador)
 ipcMain.handle('save-project', async (_e, jsonText) => {
   const r = await dialog.showSaveDialog(win, {
     title: 'Salvar projeto',

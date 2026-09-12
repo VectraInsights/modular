@@ -1,7 +1,7 @@
 {
-  "name": "planejador-comodos",
+  "name": "obliquo-studio",
   "version": "1.0.0",
-  "description": "Planejador de cômodos 2D + 3D — app de PC (Electron). Só digite as medidas e o desenho sai sozinho.",
+  "description": "Oblíquo Studio — Planejador de cômodos 2D + 3D — app de PC (Electron). Só digite as medidas e o desenho sai sozinho.",
   "main": "main.js",
   "author": "",
   "license": "MIT",
@@ -15,8 +15,8 @@
     "electron-builder": "^25.0.0"
   },
   "build": {
-    "appId": "com.planejador.comodos",
-    "productName": "Planejador de Cômodos",
+    "appId": "com.obliquo.studio",
+    "productName": "Oblíquo Studio",
     "directories": {
       "output": "dist_electron"
     },
@@ -34,10 +34,10 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Planejador de Cômodos"
+      "shortcutName": "Oblíquo Studio"
     },
     "portable": {
-      "artifactName": "PlanejadorComodos-${version}-portable.${ext}"
+      "artifactName": "ObliquoStudio-${version}-portable.${ext}"
     }
   }
 }
