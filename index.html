@@ -435,24 +435,45 @@ async function exportPNG(){
 }
 function exportXLS(){
   const st=S(); const rows=[];
+  const p=18; // espessura MDF 18mm
   rows.push(['Quantidade','Comprimento','Largura','Função','Fita C1','Fita C2','Fita L1','Fita L2','Material','Complemento','Girar']);
+  function add(comp,larg,func,mat){ rows.push([1,Math.round(comp),Math.round(larg),func||'',0,0,0,0,mat||'MDF 18mm','',comp>larg?'S':'N']); }
   st.furn.forEach(f=>{
-    const w=Math.round(f.w*1000), h=Math.round(f.h*1000);
-    const fh=Math.round((f.fH||.9)*1000);
-    const func=f.name||'Móvel';
+    const w=Math.round(f.w*1000), d=Math.round(f.h*1000), fh=Math.round((f.fH||.9)*1000);
     const wc=f.wardConfig||null;
-    let complemento='';
+    const nome=f.name||'Móvel';
     if(wc){
-      const parts=[];
-      if(wc.gavetas&&wc.gavetas.qtd) parts.push(wc.gavetas.qtd+' gavetas');
-      if(wc.prateleiras&&wc.prateleiras.qtd) parts.push(wc.prateleiras.qtd+' prateleiras');
-      if(wc.varao&&wc.varao.presente) parts.push('varão');
-      if(wc.maleiro>0) parts.push('maleiro '+wc.maleiro+'mm');
-      if(wc.rodape>0) parts.push('rodapé '+wc.rodape+'mm');
-      if(wc.porta&&wc.porta.qtd) parts.push(wc.porta.qtd+' portas');
-      complemento=parts.join(', ');
+      const innerW=w-p*2, innerD=d-p*2;
+      add(fh,d,'Lateral Esq '+nome,'MDF 18mm');
+      add(fh,d,'Lateral Dir '+nome,'MDF 18mm');
+      add(w-p*2,d,'Topo '+nome,'MDF 18mm');
+      add(w-p*2,d,'Fundo '+nome,'MDF 8mm');
+      if(wc.rodape>0) add(w,wc.rodape,'Rodapé '+nome,'MDF 18mm');
+      if(wc.maleiro>0) add(innerW,innerD,'Maleiro '+nome,'MDF 18mm');
+      if(wc.prateleiras&&wc.prateleiras.qtd>0){
+        for(let k=0;k<wc.prateleiras.qtd;k++) add(innerW,innerD,'Prateleira '+(k+1)+' '+nome,'MDF 18mm'); }
+      if(wc.gavetas&&wc.gavetas.qtd>0){
+        const altArr=wc.gavetas.hArr||[];
+        const posArr=wc.gavetas.pos||[];
+        for(let k=0;k<wc.gavetas.qtd;k++){
+          const gh=altArr[k]||200;
+          add(innerW,gh,'Frente Gav '+(k+1)+' '+nome,'MDF 18mm');
+          add(gh,innerD,'Lateral Gav '+(k+1)+' '+nome,'MDF 18mm');
+          add(gh,innerD,'Lateral Gav '+(k+1)+' '+nome,'MDF 18mm');
+          add(innerW-p*2,innerD-p*2,'Fundo Gav '+(k+1)+' '+nome,'MDF 8mm'); } }
+      if(wc.porta&&wc.porta.qtd>0){
+        const altArr=wc.porta.altArr||[];
+        const posArr=wc.porta.posArr||[];
+        for(let k=0;k<wc.porta.qtd;k++){
+          const doorH=altArr[k]||1200;
+          const doorW=Math.round(wc.porta.qtd>0?w/wc.porta.qtd:w);
+          add(doorH,doorW,'Porta '+(k+1)+' '+nome,'MDF 18mm'); } }
+    } else {
+      add(fh,d,'Lateral Esq '+nome,'MDF 18mm');
+      add(fh,d,'Lateral Dir '+nome,'MDF 18mm');
+      add(w-p*2,d,'Topo '+nome,'MDF 18mm');
+      add(w-p*2,d,'Fundo '+nome,'MDF 8mm');
     }
-    rows.push([1,w,h,func,'0','0','0','0','MDF 18mm',complemento,f.w>f.h?'S':'N']);
   });
   let csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join('\t')).join('\n');
   const blob=new Blob(['\ufeff'+csv],{type:'application/vnd.ms-excel;charset=utf-8'});
