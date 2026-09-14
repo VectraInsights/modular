@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -474,12 +474,6 @@ function exportXLS(){
       add(w-p*2,d,'Topo '+nome);
       add(w-p*2,d,'Fundo '+nome,'8mm');
     }
-  });
-  let csv=rows.map(r=>r.join('\t')).join('\n');
-  const blob=new Blob([csv],{type:'text/tab-separated-values;charset=utf-8'});
-  const a=document.createElement('a'); a.download=(st.room.name||'plano_corte')+'.xls'; a.href=URL.createObjectURL(blob); a.click();
-  URL.revokeObjectURL(a.href);
-}
   });
   let csv=rows.map(r=>r.join('\t')).join('\n');
   const blob=new Blob([csv],{type:'text/tab-separated-values;charset=utf-8'});
