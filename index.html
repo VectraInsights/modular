@@ -81,7 +81,7 @@ svg{display:block;margin:0 auto;touch-action:none;user-select:none}
     <ul id="fList"></ul>
   </div>
   <div class="card"><h2>4 - Projeto (arquivo no PC)</h2>
-    <div class="toolbar"><button class="primary" onclick="saveProject()">Salvar .json</button><button onclick="openProject()">Abrir .json</button><button onclick="exportPNG()">Exportar PNG</button></div>
+    <div class="toolbar"><button class="primary" onclick="saveProject()">Salvar .json</button><button onclick="openProject()">Abrir .json</button><button onclick="exportPNG()">Exportar PNG</button><button onclick="exportXLS()">Exportar XLS</button></div>
     <div class="hint" id="saveInfo">Salvo automatico no app. Use Salvar para guardar o arquivo onde quiser.</div>
   </div>
 </div>
@@ -433,7 +433,33 @@ async function exportPNG(){
     const f=await window.pcApi.savePng(url,name); if(f) alert('PNG salvo em: '+f); }
   else { const a=document.createElement('a'); a.download=name+'.png'; a.href=url; a.click(); }
 }
-if(window.pcApi) window.pcApi.onMenu(async (a)=>{ if(a==='save')saveProject(); if(a==='open')openProject(); if(a==='png')exportPNG(); if(a==='view:2d')showView('2d'); if(a==='view:3d')showView('3d'); });
+function exportXLS(){
+  const st=S(); const rows=[];
+  rows.push(['Quantidade','Comprimento','Largura','Função','Fita C1','Fita C2','Fita L1','Fita L2','Material','Complemento','Girar']);
+  st.furn.forEach(f=>{
+    const w=Math.round(f.w*1000), h=Math.round(f.h*1000);
+    const fh=Math.round((f.fH||.9)*1000);
+    const func=f.name||'Móvel';
+    const wc=f.wardConfig||null;
+    let complemento='';
+    if(wc){
+      const parts=[];
+      if(wc.gavetas&&wc.gavetas.qtd) parts.push(wc.gavetas.qtd+' gavetas');
+      if(wc.prateleiras&&wc.prateleiras.qtd) parts.push(wc.prateleiras.qtd+' prateleiras');
+      if(wc.varao&&wc.varao.presente) parts.push('varão');
+      if(wc.maleiro>0) parts.push('maleiro '+wc.maleiro+'mm');
+      if(wc.rodape>0) parts.push('rodapé '+wc.rodape+'mm');
+      if(wc.porta&&wc.porta.qtd) parts.push(wc.porta.qtd+' portas');
+      complemento=parts.join(', ');
+    }
+    rows.push([1,w,h,func,'0','0','0','0','MDF 18mm',complemento,f.w>f.h?'S':'N']);
+  });
+  let csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join('\t')).join('\n');
+  const blob=new Blob(['\ufeff'+csv],{type:'application/vnd.ms-excel;charset=utf-8'});
+  const a=document.createElement('a'); a.download=(st.room.name||'plano_corte')+'.xls'; a.href=URL.createObjectURL(blob); a.click();
+  URL.revokeObjectURL(a.href);
+}
+if(window.pcApi) window.pcApi.onMenu(async (a)=>{ if(a==='save')saveProject(); if(a==='open')openProject(); if(a==='png')exportPNG(); if(a==='xls')exportXLS(); if(a==='view:2d')showView('2d'); if(a==='view:3d')showView('3d'); });
 restore(); listAll(); draw2d();
 if(!S().furn.length&&!S().openings.length) loadTemplate();
 </script>
